@@ -1,0 +1,42 @@
+# Changed-input case: a deliberately altered invoice CSV
+# File: samples/changed-input.csv
+#
+# PREDICTION (written before running):
+#   line 2  HARBOR/KEEP-700 at 999.99 conflicts with the stored 456.78  -> rejected, original preserved
+#   line 3  MAPLE/CHANGED-1 250.50 is new and valid                     -> imported
+#   line 4  amount 12.345 has three decimal places                      -> rejected
+#   line 5  customer GHOST does not exist                               -> rejected
+#   totals  imported=1 skipped=0 rejected=3; outstanding 3698.19 -> 3948.69
+#
+# OBSERVED:
+
+--- before ---
+{'invoice_count': 9, 'open_count': 7, 'outstanding': 3698.19}
+
+--- POST /api/import?kind=invoices ---
+{
+    "imported": 1,
+    "skipped": 0,
+    "rejected": 3,
+    "errors": [
+        {
+            "line": 2,
+            "reason": "Invoice already exists for this customer and invoice number with different details"
+        },
+        {
+            "line": 4,
+            "reason": "amount must be a positive decimal with at most two decimal places"
+        },
+        {
+            "line": 5,
+            "reason": "Unknown customer_id"
+        }
+    ]
+}
+
+--- after ---
+{'invoice_count': 10, 'open_count': 8, 'outstanding': 3948.69}
+HARBOR/KEEP-700 amount preserved: 456.78
+MAPLE/CHANGED-1 imported: True
+
+RESULT: prediction matched on every line number, reason and total.
