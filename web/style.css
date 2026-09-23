@@ -7,3 +7,4 @@
 .feedback.bad { color: #a11; }
 .feedback .errors { margin: .4rem 0 0; padding-left: 1.1rem; font-weight: 400; }
 .feedback .errors li { margin: .15rem 0; }
+button.secondary { background: transparent; border: 1px solid currentColor; margin-right: .5rem; }

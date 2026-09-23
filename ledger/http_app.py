@@ -60,8 +60,10 @@ def make_server(db_path, web_dir, port):
                 return self.send(400, {'error': 'Use a UTF-8 CSV smaller than 2 MB'})
             db = storage.connect(db_path)
             try:
-                kind = parse_qs(url.query).get('kind', [''])[0]
-                result = importing.import_csv(db, text, kind)
+                query = parse_qs(url.query)
+                kind = query.get('kind', [''])[0]
+                dry_run = query.get('dry_run', ['0'])[0].lower() in ('1', 'true', 'yes')
+                result = importing.import_csv(db, text, kind, dry_run=dry_run)
                 self.send(200, result)
             except (ValueError, sqlite3.IntegrityError) as exc:
                 self.send(400, {'error': str(exc)})

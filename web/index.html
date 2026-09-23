@@ -14,8 +14,8 @@
 <div class="table-wrap"><table><thead><tr><th>Customer</th><th>Invoice</th><th>Due</th><th class="number">Amount</th><th class="number">Paid</th><th class="number">Balance</th><th>Status</th></tr></thead><tbody id="invoices"></tbody></table></div>
 </section>
 <section class="imports">
-<article class="card"><h2>Import invoices</h2><p>Choose an invoice CSV from the samples folder.</p><form data-kind="invoices"><label>Invoice CSV<input type="file" accept=".csv,text/csv" required></label><button>Import invoices</button><p class="feedback" role="status" aria-live="polite"></p></form></article>
-<article class="card"><h2>Import payments</h2><p>Record payments against their invoice references.</p><form data-kind="payments"><label>Payment CSV<input type="file" accept=".csv,text/csv" required></label><button>Import payments</button><p class="feedback" role="status" aria-live="polite"></p></form></article>
+<article class="card"><h2>Import invoices</h2><p>Choose an invoice CSV from the samples folder.</p><form data-kind="invoices"><label>Invoice CSV<input type="file" accept=".csv,text/csv" required></label><button type="button" class="secondary" data-check>Check without saving</button><button>Import invoices</button><p class="feedback" role="status" aria-live="polite"></p></form></article>
+<article class="card"><h2>Import payments</h2><p>Record payments against their invoice references.</p><form data-kind="payments"><label>Payment CSV<input type="file" accept=".csv,text/csv" required></label><button type="button" class="secondary" data-check>Check without saving</button><button>Import payments</button><p class="feedback" role="status" aria-live="polite"></p></form></article>
 </section>
 <section class="card"><h2>Unmatched payments</h2><p>Keep unresolved references visible for review.</p><ul id="unmatched"></ul></section>
 <p id="page-error" role="alert"></p>

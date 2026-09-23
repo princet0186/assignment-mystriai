@@ -45,40 +45,48 @@ const summarise = ({ imported = 0, skipped = 0, rejected = 0 }) => {
   return parts.join(', ') + '.';
 };
 
-async function submitImport(form) {
+async function submitImport(form, dryRun = false) {
   const feedback = form.querySelector('.feedback');
-  const button = form.querySelector('button');
-  button.disabled = true;
+  const buttons = form.querySelectorAll('button');
+  buttons.forEach(b => { b.disabled = true; });
   feedback.className = 'feedback';
-  feedback.textContent = 'Importing…';
+  feedback.textContent = dryRun ? 'Checking…' : 'Importing…';
   try {
     const file = form.querySelector('input').files[0];
     if (!file) throw new Error('Choose a CSV file first.');
-    const response = await fetch(`/api/import?kind=${form.dataset.kind}`, {
+    const query = `kind=${form.dataset.kind}${dryRun ? '&dry_run=1' : ''}`;
+    const response = await fetch(`/api/import?${query}`, {
       method: 'POST', headers: { 'Content-Type': 'text/csv' }, body: await file.text()
     });
     const payload = await response.json().catch(() => null);
     if (!response.ok) {
-      throw new Error((payload && payload.error) || `The server returned ${response.status}.`);
+      throw new Error(payload?.error || `The server returned ${response.status}.`);
     }
     feedback.className = payload.rejected ? 'feedback warn' : 'feedback ok';
-    feedback.replaceChildren(text('span', summarise(payload)));
+    const lead = payload.dry_run
+      ? `Preview only, nothing saved: ${summarise(payload)}`
+      : summarise(payload);
+    feedback.replaceChildren(text('span', lead));
     // Show every rejected line so the owner can correct the file and retry.
-    if (payload.errors && payload.errors.length) {
+    if (payload.errors?.length) {
       const list = document.createElement('ul');
       list.className = 'errors';
       payload.errors.forEach(e => list.append(text('li', `Line ${e.line}: ${e.reason}`)));
       feedback.append(list);
     }
-    await refresh();
+    if (!payload.dry_run) await refresh();
   } catch (error) {
     feedback.className = 'feedback bad';
-    feedback.textContent = `Import failed: ${error.message}`;
+    feedback.textContent = `${dryRun ? 'Check' : 'Import'} failed: ${error.message}`;
   } finally {
-    button.disabled = false;
+    buttons.forEach(b => { b.disabled = false; });
   }
 }
 
 document.querySelector('#status').addEventListener('change', () => refresh().catch(e => { document.querySelector('#page-error').textContent = e.message; }));
-document.querySelectorAll('form[data-kind]').forEach(form => form.addEventListener('submit', e => { e.preventDefault(); submitImport(form); }));
+document.querySelectorAll('form[data-kind]').forEach(form => {
+  form.addEventListener('submit', e => { e.preventDefault(); submitImport(form); });
+  // Preview an import before committing it, so a retry cannot surprise the owner.
+  form.querySelector('[data-check]').addEventListener('click', () => submitImport(form, true));
+});
 refresh().catch(e => { document.querySelector('#page-error').textContent = e.message; });
