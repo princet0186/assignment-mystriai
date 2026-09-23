@@ -1,0 +1,95 @@
+# After repair: full suite from a clean checkout
+# Commit: c10c458
+# Command: python3 -m unittest discover -s tests -v
+# Python: Python 3.14.7
+
+test_a_real_import_after_a_dry_run_still_writes (test_dry_run.DryRunImport.test_a_real_import_after_a_dry_run_still_writes)
+The rollback must not leave the connection unable to commit. ... ok
+test_dry_run_changes_nothing (test_dry_run.DryRunImport.test_dry_run_changes_nothing) ... ok
+test_dry_run_of_an_empty_file_is_a_clean_zero_report (test_dry_run.DryRunImport.test_dry_run_of_an_empty_file_is_a_clean_zero_report) ... ok
+test_dry_run_of_payments_does_not_change_balances (test_dry_run.DryRunImport.test_dry_run_of_payments_does_not_change_balances) ... ok
+test_dry_run_on_a_file_with_nothing_to_do (test_dry_run.DryRunImport.test_dry_run_on_a_file_with_nothing_to_do)
+A valid file whose rows are all already present proposes no changes. ... ok
+test_dry_run_predicts_an_unmatched_payment (test_dry_run.DryRunImport.test_dry_run_predicts_an_unmatched_payment) ... ok
+test_dry_run_reports_the_same_counts_as_the_real_import (test_dry_run.DryRunImport.test_dry_run_reports_the_same_counts_as_the_real_import) ... ok
+test_dry_run_result_is_flagged (test_dry_run.DryRunImport.test_dry_run_result_is_flagged) ... ok
+test_dry_run_still_rejects_an_invalid_header (test_dry_run.DryRunImport.test_dry_run_still_rejects_an_invalid_header) ... ok
+test_dry_run_survives_a_reconnect (test_dry_run.DryRunImport.test_dry_run_survives_a_reconnect)
+Nothing may leak to disk, even after the connection is closed. ... ok
+test_format_amount_does_not_truncate (test_money.MoneyHelpers.test_format_amount_does_not_truncate)
+int(v * 100) / 100 reported 1699.56 for a balance of 1699.57. ... ok
+test_large_permitted_amount_is_exact (test_money.MoneyHelpers.test_large_permitted_amount_is_exact) ... ok
+test_round_trip_through_to_amount (test_money.MoneyHelpers.test_round_trip_through_to_amount) ... ok
+test_to_paise_ignores_float_representation_error (test_money.MoneyHelpers.test_to_paise_ignores_float_representation_error) ... ok
+test_to_paise_rounds_half_up (test_money.MoneyHelpers.test_to_paise_rounds_half_up) ... ok
+test_export_agrees_with_the_screen_for_every_invoice (test_money.ReportedMoney.test_export_agrees_with_the_screen_for_every_invoice) ... ok
+test_export_agrees_with_the_screen_on_a_truncation_case (test_money.ReportedMoney.test_export_agrees_with_the_screen_on_a_truncation_case)
+721.28 - 84.97 truncated to 636.30 while the screen showed 636.31. ... ok
+test_many_small_payments_accumulate_exactly (test_money.ReportedMoney.test_many_small_payments_accumulate_exactly) ... ok
+test_money_fields_are_json_numbers (test_money.ReportedMoney.test_money_fields_are_json_numbers)
+BUSINESS_RULES.md: money fields in JSON are numbers, not strings. ... ok
+test_outstanding_equals_the_sum_of_exported_positive_balances (test_money.ReportedMoney.test_outstanding_equals_the_sum_of_exported_positive_balances) ... ok
+test_two_payments_summing_to_the_invoice_leave_no_residue (test_money.ReportedMoney.test_two_payments_summing_to_the_invoice_leave_no_residue)
+INV-300 is 19.99 and already has a 10.00 payment; 9.99 closes it. ... ok
+test_all_customers_are_preserved (test_preservation.ExistingRegister.test_all_customers_are_preserved) ... ok
+test_every_invoice_keeps_its_id_identity_amount_and_due_date (test_preservation.ExistingRegister.test_every_invoice_keeps_its_id_identity_amount_and_due_date) ... ok
+test_every_payment_keeps_its_identity_amount_and_allocation (test_preservation.ExistingRegister.test_every_payment_keeps_its_identity_amount_and_allocation) ... ok
+test_existing_and_new_records_both_survive_a_restart (test_preservation.ExistingRegister.test_existing_and_new_records_both_survive_a_restart) ... ok
+test_fixture_files_are_never_modified_by_the_tests (test_preservation.ExistingRegister.test_fixture_files_are_never_modified_by_the_tests) ... ok
+test_migration_adds_the_unique_invoice_index (test_preservation.ExistingRegister.test_migration_adds_the_unique_invoice_index) ... ok
+test_migration_is_idempotent_and_repeated_connects_are_safe (test_preservation.ExistingRegister.test_migration_is_idempotent_and_repeated_connects_are_safe) ... ok
+test_migration_refuses_a_register_that_already_has_duplicates (test_preservation.ExistingRegister.test_migration_refuses_a_register_that_already_has_duplicates)
+Rather than guessing which copy to delete, the migration reports it. ... ok
+test_new_invoice_and_payment_import_after_migration (test_preservation.ExistingRegister.test_new_invoice_and_payment_import_after_migration) ... ok
+test_reimporting_an_existing_invoice_does_not_inflate_the_register (test_preservation.ExistingRegister.test_reimporting_an_existing_invoice_does_not_inflate_the_register)
+The defect that motivated the migration, checked on the owner's data. ... ok
+test_summary_matches_the_documented_starting_totals (test_preservation.ExistingRegister.test_summary_matches_the_documented_starting_totals) ... ok
+test_the_unmatched_payment_stays_unmatched (test_preservation.ExistingRegister.test_the_unmatched_payment_stays_unmatched)
+KEEP-U1 references MAPLE/WAIT-900, an invoice that does not exist. ... ok
+test_identical_reimport_is_skipped_and_totals_are_unchanged (test_regression.DuplicateInvoiceImport.test_identical_reimport_is_skipped_and_totals_are_unchanged) ... ok
+test_reimport_does_not_create_a_second_row (test_regression.DuplicateInvoiceImport.test_reimport_does_not_create_a_second_row) ... ok
+test_same_identity_with_different_amount_is_rejected (test_regression.DuplicateInvoiceImport.test_same_identity_with_different_amount_is_rejected) ... ok
+test_same_identity_with_different_due_date_is_rejected (test_regression.DuplicateInvoiceImport.test_same_identity_with_different_due_date_is_rejected) ... ok
+test_same_invoice_number_for_a_different_customer_is_allowed (test_regression.DuplicateInvoiceImport.test_same_invoice_number_for_a_different_customer_is_allowed)
+Identity is the (customer_id, invoice_number) pair, not the number alone. ... ok
+test_identical_payment_reimport_is_skipped (test_regression.DuplicatePayment.test_identical_payment_reimport_is_skipped) ... ok
+test_reused_payment_id_with_different_amount_is_rejected (test_regression.DuplicatePayment.test_reused_payment_id_with_different_amount_is_rejected) ... ok
+test_byte_order_mark_is_accepted (test_regression.InputHygiene.test_byte_order_mark_is_accepted) ... ok
+test_identifiers_stay_case_sensitive (test_regression.InputHygiene.test_identifiers_stay_case_sensitive) ... ok
+test_impossible_calendar_date_is_rejected (test_regression.InputHygiene.test_impossible_calendar_date_is_rejected) ... ok
+test_surrounding_whitespace_is_trimmed (test_regression.InputHygiene.test_surrounding_whitespace_is_trimmed) ... ok
+test_three_decimal_amount_is_rejected (test_regression.InputHygiene.test_three_decimal_amount_is_rejected) ... ok
+test_export_agrees_with_the_screen_for_the_same_record (test_regression.MoneyPrecision.test_export_agrees_with_the_screen_for_the_same_record) ... ok
+test_outstanding_excludes_overpaid_invoices (test_regression.MoneyPrecision.test_outstanding_excludes_overpaid_invoices)
+Overview outstanding sums positive balances only. ... ok
+test_overpayment_does_not_reduce_another_invoice_outstanding (test_regression.MoneyPrecision.test_overpayment_does_not_reduce_another_invoice_outstanding) ... ok
+test_overpayment_marks_the_invoice_paid_with_a_negative_balance (test_regression.MoneyPrecision.test_overpayment_marks_the_invoice_paid_with_a_negative_balance) ... ok
+test_all_is_the_union_of_open_and_paid (test_regression.OpenPaidFilter.test_all_is_the_union_of_open_and_paid) ... ok
+test_open_filter_agrees_with_overview_open_count (test_regression.OpenPaidFilter.test_open_filter_agrees_with_overview_open_count)
+The owner's complaint: the open view disagreed with the overview. ... ok
+test_open_filter_returns_only_open_invoices (test_regression.OpenPaidFilter.test_open_filter_returns_only_open_invoices) ... ok
+test_paid_filter_returns_only_paid_invoices (test_regression.OpenPaidFilter.test_paid_filter_returns_only_paid_invoices) ... ok
+test_all_rows_invalid_is_still_a_processed_import (test_regression.PartialImport.test_all_rows_invalid_is_still_a_processed_import) ... ok
+test_invalid_header_rejects_the_whole_import_and_writes_nothing (test_regression.PartialImport.test_invalid_header_rejects_the_whole_import_and_writes_nothing) ... ok
+test_line_numbers_stay_correct_when_an_early_row_is_rejected (test_regression.PartialImport.test_line_numbers_stay_correct_when_an_early_row_is_rejected)
+Rejected rows must not shift the reported line numbers of later ones. ... ok
+test_rejected_row_reports_its_csv_line_number (test_regression.PartialImport.test_rejected_row_reports_its_csv_line_number)
+The header is line 1, so the bad row is line 3. ... ok
+test_valid_header_with_no_data_rows_is_a_successful_empty_import (test_regression.PartialImport.test_valid_header_with_no_data_rows_is_a_successful_empty_import) ... ok
+test_valid_rows_import_despite_one_invalid_row (test_regression.PartialImport.test_valid_rows_import_despite_one_invalid_row) ... ok
+test_payment_attaches_to_its_own_customer_and_invoice (test_regression.PaymentMatching.test_payment_attaches_to_its_own_customer_and_invoice)
+INV-100 and INV-200 both cost 1250.00; the amount must not decide. ... ok
+test_payment_for_the_right_number_but_wrong_customer_is_unmatched (test_regression.PaymentMatching.test_payment_for_the_right_number_but_wrong_customer_is_unmatched)
+Both customer_id and invoice_number must agree before attaching. ... ok
+test_payment_without_a_matching_invoice_stays_unmatched (test_regression.PaymentMatching.test_payment_without_a_matching_invoice_stays_unmatched) ... ok
+test_unmatched_payment_changes_no_invoice_balance (test_regression.PaymentMatching.test_unmatched_payment_changes_no_invoice_balance) ... ok
+test_export_has_header (test_smoke.SmokeTests.test_export_has_header) ... ok
+test_one_valid_invoice (test_smoke.SmokeTests.test_one_valid_invoice) ... ok
+test_payment_reference_when_amount_is_unique (test_smoke.SmokeTests.test_payment_reference_when_amount_is_unique) ... ok
+test_seed_is_repeatable (test_smoke.SmokeTests.test_seed_is_repeatable) ... ok
+test_seed_summary (test_smoke.SmokeTests.test_seed_summary) ... ok
+
+----------------------------------------------------------------------
+Ran 68 tests in 0.163s
+
+OK

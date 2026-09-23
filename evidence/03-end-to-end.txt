@@ -1,0 +1,66 @@
+# End-to-end verification over HTTP against the owner's restored register
+# Commit: c10c458
+# Setup:   python3 restore_fixture.py --replace && python3 app.py --port 8788
+# Command: python3 verify.py --port 8788
+# Python:  Python 3.14.7
+
+
+Verifying http://127.0.0.1:8788 against fixtures/expected-records.json
+
+Existing register
+  PASS  GET /api/overview returns 200
+  PASS  invoice_count
+  PASS  open_count
+  PASS  outstanding
+  PASS  unmatched payment KEEP-U1 is retained
+  PASS  invoice HARBOR/INV-100 amount
+  PASS  invoice MAPLE/INV-200 amount
+  PASS  invoice NORTH/INV-300 amount
+  PASS  invoice HARBOR/INV-101 amount
+  PASS  invoice MAPLE/INV-201 amount
+  PASS  invoice NORTH/INV-301 amount
+  PASS  invoice HARBOR/KEEP-700 amount
+  PASS  invoice MAPLE/KEEP-700 amount
+  PASS  invoice NORTH/KEEP-702 amount
+  PASS  KEEP-700 paid allocation preserved
+
+D1 open/paid filter
+  PASS  every row in ?status=open is open
+  PASS  open rows match summary.open_count
+  PASS  every row in ?status=paid is paid
+  PASS  all == open + paid
+  PASS  invalid status returns 400
+
+D5 partial import
+  PASS  dry run returns 200
+  PASS  dry run reports 2 imported, 1 rejected
+  PASS  dry run reports the bad line number
+
+Improvement: import preview
+  PASS  register unchanged after the dry run
+  PASS  real import returns 200
+  PASS  real import matches what the preview predicted
+
+D2 duplicate import
+  PASS  retry skips both rows
+  PASS  outstanding is unchanged by the retry
+
+D3 payment matching
+  PASS  PAY-201 paid MAPLE/INV-200
+  PASS  HARBOR/INV-100 was not touched
+  PASS  PAY-404 is retained as unmatched
+
+D4 export precision
+  PASS  export header
+  PASS  every exported row matches the screen
+  PASS  export covers every invoice
+
+Restart
+  restarting the server on a spare port...
+  PASS  summary is identical after a restart
+  PASS  the original KEEP-700 allocation survived
+  PASS  the newly imported INV-103 survived
+  PASS  KEEP-U1 is still unmatched
+
+38 passed, 0 failed
+All end-to-end checks passed.
