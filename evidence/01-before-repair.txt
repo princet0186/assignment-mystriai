@@ -1,0 +1,225 @@
+# Baseline: regression suite against the UNREPAIRED starter
+# Commit: 3f64490 (Baseline pack)
+# Command: python3 -m unittest discover -s tests -v
+# Python: Python 3.14.7
+
+test_identical_reimport_is_skipped_and_totals_are_unchanged (test_regression.DuplicateInvoiceImport.test_identical_reimport_is_skipped_and_totals_are_unchanged) ... FAIL
+test_reimport_does_not_create_a_second_row (test_regression.DuplicateInvoiceImport.test_reimport_does_not_create_a_second_row) ... FAIL
+test_same_identity_with_different_amount_is_rejected (test_regression.DuplicateInvoiceImport.test_same_identity_with_different_amount_is_rejected) ... FAIL
+test_same_identity_with_different_due_date_is_rejected (test_regression.DuplicateInvoiceImport.test_same_identity_with_different_due_date_is_rejected) ... FAIL
+test_same_invoice_number_for_a_different_customer_is_allowed (test_regression.DuplicateInvoiceImport.test_same_invoice_number_for_a_different_customer_is_allowed)
+Identity is the (customer_id, invoice_number) pair, not the number alone. ... ok
+test_identical_payment_reimport_is_skipped (test_regression.DuplicatePayment.test_identical_payment_reimport_is_skipped) ... ok
+test_reused_payment_id_with_different_amount_is_rejected (test_regression.DuplicatePayment.test_reused_payment_id_with_different_amount_is_rejected) ... ok
+test_byte_order_mark_is_accepted (test_regression.InputHygiene.test_byte_order_mark_is_accepted) ... ok
+test_identifiers_stay_case_sensitive (test_regression.InputHygiene.test_identifiers_stay_case_sensitive) ... ERROR
+test_impossible_calendar_date_is_rejected (test_regression.InputHygiene.test_impossible_calendar_date_is_rejected) ... ERROR
+test_surrounding_whitespace_is_trimmed (test_regression.InputHygiene.test_surrounding_whitespace_is_trimmed) ... ok
+test_three_decimal_amount_is_rejected (test_regression.InputHygiene.test_three_decimal_amount_is_rejected) ... ERROR
+test_export_agrees_with_the_screen_for_the_same_record (test_regression.MoneyPrecision.test_export_agrees_with_the_screen_for_the_same_record) ... ok
+test_outstanding_excludes_overpaid_invoices (test_regression.MoneyPrecision.test_outstanding_excludes_overpaid_invoices)
+Overview outstanding sums positive balances only. ... ok
+test_overpayment_does_not_reduce_another_invoice_outstanding (test_regression.MoneyPrecision.test_overpayment_does_not_reduce_another_invoice_outstanding) ... ok
+test_overpayment_marks_the_invoice_paid_with_a_negative_balance (test_regression.MoneyPrecision.test_overpayment_marks_the_invoice_paid_with_a_negative_balance) ... ok
+test_all_is_the_union_of_open_and_paid (test_regression.OpenPaidFilter.test_all_is_the_union_of_open_and_paid) ... FAIL
+test_open_filter_agrees_with_overview_open_count (test_regression.OpenPaidFilter.test_open_filter_agrees_with_overview_open_count)
+The owner's complaint: the open view disagreed with the overview. ... FAIL
+test_open_filter_returns_only_open_invoices (test_regression.OpenPaidFilter.test_open_filter_returns_only_open_invoices) ... FAIL
+test_paid_filter_returns_only_paid_invoices (test_regression.OpenPaidFilter.test_paid_filter_returns_only_paid_invoices) ... ok
+test_all_rows_invalid_is_still_a_processed_import (test_regression.PartialImport.test_all_rows_invalid_is_still_a_processed_import) ... ERROR
+test_invalid_header_rejects_the_whole_import_and_writes_nothing (test_regression.PartialImport.test_invalid_header_rejects_the_whole_import_and_writes_nothing) ... ok
+test_line_numbers_stay_correct_when_an_early_row_is_rejected (test_regression.PartialImport.test_line_numbers_stay_correct_when_an_early_row_is_rejected)
+Rejected rows must not shift the reported line numbers of later ones. ... ERROR
+test_rejected_row_reports_its_csv_line_number (test_regression.PartialImport.test_rejected_row_reports_its_csv_line_number)
+The header is line 1, so the bad row is line 3. ... ERROR
+test_valid_header_with_no_data_rows_is_a_successful_empty_import (test_regression.PartialImport.test_valid_header_with_no_data_rows_is_a_successful_empty_import) ... ok
+test_valid_rows_import_despite_one_invalid_row (test_regression.PartialImport.test_valid_rows_import_despite_one_invalid_row) ... ERROR
+test_payment_attaches_to_its_own_customer_and_invoice (test_regression.PaymentMatching.test_payment_attaches_to_its_own_customer_and_invoice)
+INV-100 and INV-200 both cost 1250.00; the amount must not decide. ... FAIL
+test_payment_for_the_right_number_but_wrong_customer_is_unmatched (test_regression.PaymentMatching.test_payment_for_the_right_number_but_wrong_customer_is_unmatched)
+Both customer_id and invoice_number must agree before attaching. ... ok
+test_payment_without_a_matching_invoice_stays_unmatched (test_regression.PaymentMatching.test_payment_without_a_matching_invoice_stays_unmatched) ... ok
+test_unmatched_payment_changes_no_invoice_balance (test_regression.PaymentMatching.test_unmatched_payment_changes_no_invoice_balance) ... ok
+test_export_has_header (test_smoke.SmokeTests.test_export_has_header) ... ok
+test_one_valid_invoice (test_smoke.SmokeTests.test_one_valid_invoice) ... ok
+test_payment_reference_when_amount_is_unique (test_smoke.SmokeTests.test_payment_reference_when_amount_is_unique) ... ok
+test_seed_is_repeatable (test_smoke.SmokeTests.test_seed_is_repeatable) ... ok
+test_seed_summary (test_smoke.SmokeTests.test_seed_summary) ... ok
+
+======================================================================
+ERROR: test_identifiers_stay_case_sensitive (test_regression.InputHygiene.test_identifiers_stay_case_sensitive)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/tests/test_regression.py", line 239, in test_identifiers_stay_case_sensitive
+    result = importing.import_csv(
+        self.db, INVOICE_HEADER + 'harbor,INV-778,12.50,2026-09-12\n', 'invoices')
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/ledger/importing.py", line 15, in import_csv
+    rows = [normalize(row, kind, customers) for row in reader]
+            ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/ledger/validation.py", line 19, in normalize
+    raise ValueError('Unknown customer_id')
+ValueError: Unknown customer_id
+
+======================================================================
+ERROR: test_impossible_calendar_date_is_rejected (test_regression.InputHygiene.test_impossible_calendar_date_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/tests/test_regression.py", line 249, in test_impossible_calendar_date_is_rejected
+    result = importing.import_csv(
+        self.db, INVOICE_HEADER + 'HARBOR,INV-780,12.50,2026-02-30\n', 'invoices')
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/ledger/importing.py", line 15, in import_csv
+    rows = [normalize(row, kind, customers) for row in reader]
+            ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/ledger/validation.py", line 31, in normalize
+    raise ValueError('due_date must be YYYY-MM-DD') from None
+ValueError: due_date must be YYYY-MM-DD
+
+======================================================================
+ERROR: test_three_decimal_amount_is_rejected (test_regression.InputHygiene.test_three_decimal_amount_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/tests/test_regression.py", line 244, in test_three_decimal_amount_is_rejected
+    result = importing.import_csv(
+        self.db, INVOICE_HEADER + 'HARBOR,INV-779,12.505,2026-09-12\n', 'invoices')
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/ledger/importing.py", line 15, in import_csv
+    rows = [normalize(row, kind, customers) for row in reader]
+            ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/ledger/validation.py", line 21, in normalize
+    raise ValueError('amount must be a positive decimal with at most two decimal places')
+ValueError: amount must be a positive decimal with at most two decimal places
+
+======================================================================
+ERROR: test_all_rows_invalid_is_still_a_processed_import (test_regression.PartialImport.test_all_rows_invalid_is_still_a_processed_import)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/tests/test_regression.py", line 171, in test_all_rows_invalid_is_still_a_processed_import
+    result = importing.import_csv(
+        self.db, INVOICE_HEADER + 'NOPE,INV-900,10.00,2026-09-12\n', 'invoices')
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/ledger/importing.py", line 15, in import_csv
+    rows = [normalize(row, kind, customers) for row in reader]
+            ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/ledger/validation.py", line 19, in normalize
+    raise ValueError('Unknown customer_id')
+ValueError: Unknown customer_id
+
+======================================================================
+ERROR: test_line_numbers_stay_correct_when_an_early_row_is_rejected (test_regression.PartialImport.test_line_numbers_stay_correct_when_an_early_row_is_rejected)
+Rejected rows must not shift the reported line numbers of later ones.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/tests/test_regression.py", line 155, in test_line_numbers_stay_correct_when_an_early_row_is_rejected
+    result = importing.import_csv(self.db, text, 'invoices')
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/ledger/importing.py", line 15, in import_csv
+    rows = [normalize(row, kind, customers) for row in reader]
+            ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/ledger/validation.py", line 21, in normalize
+    raise ValueError('amount must be a positive decimal with at most two decimal places')
+ValueError: amount must be a positive decimal with at most two decimal places
+
+======================================================================
+ERROR: test_rejected_row_reports_its_csv_line_number (test_regression.PartialImport.test_rejected_row_reports_its_csv_line_number)
+The header is line 1, so the bad row is line 3.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/tests/test_regression.py", line 145, in test_rejected_row_reports_its_csv_line_number
+    result = importing.import_csv(self.db, self.MIXED, 'invoices')
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/ledger/importing.py", line 15, in import_csv
+    rows = [normalize(row, kind, customers) for row in reader]
+            ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/ledger/validation.py", line 21, in normalize
+    raise ValueError('amount must be a positive decimal with at most two decimal places')
+ValueError: amount must be a positive decimal with at most two decimal places
+
+======================================================================
+ERROR: test_valid_rows_import_despite_one_invalid_row (test_regression.PartialImport.test_valid_rows_import_despite_one_invalid_row)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/tests/test_regression.py", line 139, in test_valid_rows_import_despite_one_invalid_row
+    result = importing.import_csv(self.db, self.MIXED, 'invoices')
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/ledger/importing.py", line 15, in import_csv
+    rows = [normalize(row, kind, customers) for row in reader]
+            ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/ledger/validation.py", line 21, in normalize
+    raise ValueError('amount must be a positive decimal with at most two decimal places')
+ValueError: amount must be a positive decimal with at most two decimal places
+
+======================================================================
+FAIL: test_identical_reimport_is_skipped_and_totals_are_unchanged (test_regression.DuplicateInvoiceImport.test_identical_reimport_is_skipped_and_totals_are_unchanged)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/tests/test_regression.py", line 67, in test_identical_reimport_is_skipped_and_totals_are_unchanged
+    self.assertEqual(result['skipped'], 1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_reimport_does_not_create_a_second_row (test_regression.DuplicateInvoiceImport.test_reimport_does_not_create_a_second_row)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/tests/test_regression.py", line 76, in test_reimport_does_not_create_a_second_row
+    self.assertEqual(count, 1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^
+AssertionError: 2 != 1
+
+======================================================================
+FAIL: test_same_identity_with_different_amount_is_rejected (test_regression.DuplicateInvoiceImport.test_same_identity_with_different_amount_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/tests/test_regression.py", line 81, in test_same_identity_with_different_amount_is_rejected
+    self.assertEqual(result['rejected'], 1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_same_identity_with_different_due_date_is_rejected (test_regression.DuplicateInvoiceImport.test_same_identity_with_different_due_date_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/tests/test_regression.py", line 88, in test_same_identity_with_different_due_date_is_rejected
+    self.assertEqual(result['rejected'], 1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_all_is_the_union_of_open_and_paid (test_regression.OpenPaidFilter.test_all_is_the_union_of_open_and_paid)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/tests/test_regression.py", line 56, in test_all_is_the_union_of_open_and_paid
+    self.assertEqual(len(every), len(opened) + len(paid))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 6 != 2
+
+======================================================================
+FAIL: test_open_filter_agrees_with_overview_open_count (test_regression.OpenPaidFilter.test_open_filter_agrees_with_overview_open_count)
+The owner's complaint: the open view disagreed with the overview.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/tests/test_regression.py", line 50, in test_open_filter_agrees_with_overview_open_count
+    self.assertEqual(len(rows), reporting.overview(self.db)['summary']['open_count'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 5
+
+======================================================================
+FAIL: test_open_filter_returns_only_open_invoices (test_regression.OpenPaidFilter.test_open_filter_returns_only_open_invoices)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/tests/test_regression.py", line 40, in test_open_filter_returns_only_open_invoices
+    self.assertTrue(all(r['status'] == 'open' for r in rows),
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    'the open filter must not contain paid invoices')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : the open filter must not contain paid invoices
+
+======================================================================
+FAIL: test_payment_attaches_to_its_own_customer_and_invoice (test_regression.PaymentMatching.test_payment_attaches_to_its_own_customer_and_invoice)
+INV-100 and INV-200 both cost 1250.00; the amount must not decide.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/princetrivedi/Downloads/Mystri-Applicant-Assessments/track-a/tests/test_regression.py", line 105, in test_payment_attaches_to_its_own_customer_and_invoice
+    self.assertEqual(self.invoice('MAPLE', 'INV-200')['paid'], 1250.00)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1250.0
+
+----------------------------------------------------------------------
+Ran 35 tests in 0.068s
+
+FAILED (failures=8, errors=7)
