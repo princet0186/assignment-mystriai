@@ -9,8 +9,12 @@ const text = (tag, value, className = '') => {
 
 async function refresh() {
   const status = document.querySelector('#status').value;
-  const responses = await Promise.all([fetch('/api/overview'), fetch(`/api/invoices?status=${status}`)]);
-  if (responses.some(r => !r.ok)) throw new Error('Could not refresh the register.');
+  const responses = await Promise.all([fetch('/api/overview'), fetch(`/api/invoices?status=${encodeURIComponent(status)}`)]);
+  const failed = responses.find(r => !r.ok);
+  if (failed) {
+    const detail = await failed.json().then(d => d.error).catch(() => null);
+    throw new Error(detail || `Could not refresh the register (${failed.status}).`);
+  }
   const [data, rows] = await Promise.all(responses.map(r => r.json()));
   document.querySelector('#invoice-count').textContent = data.summary.invoice_count;
   document.querySelector('#open-count').textContent = data.summary.open_count;
@@ -30,19 +34,45 @@ async function refresh() {
   document.querySelector('#page-error').textContent = '';
 }
 
+const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
+
+// Describe what the server actually did, so the message can never claim a
+// success the import did not have.
+const summarise = ({ imported = 0, skipped = 0, rejected = 0 }) => {
+  const parts = [`${plural(imported, 'row')} imported`];
+  if (skipped) parts.push(`${skipped} skipped as already present`);
+  if (rejected) parts.push(`${plural(rejected, 'row')} rejected`);
+  return parts.join(', ') + '.';
+};
+
 async function submitImport(form) {
   const feedback = form.querySelector('.feedback');
   const button = form.querySelector('button');
   button.disabled = true;
+  feedback.className = 'feedback';
   feedback.textContent = 'Importing…';
   try {
-    const csv = await form.querySelector('input').files[0].text();
-    await fetch(`/api/import?kind=${form.dataset.kind}`, {
-      method: 'POST', headers: { 'Content-Type': 'text/csv' }, body: csv
+    const file = form.querySelector('input').files[0];
+    if (!file) throw new Error('Choose a CSV file first.');
+    const response = await fetch(`/api/import?kind=${form.dataset.kind}`, {
+      method: 'POST', headers: { 'Content-Type': 'text/csv' }, body: await file.text()
     });
-    feedback.textContent = 'Import complete. Your records are ready.';
+    const payload = await response.json().catch(() => null);
+    if (!response.ok) {
+      throw new Error((payload && payload.error) || `The server returned ${response.status}.`);
+    }
+    feedback.className = payload.rejected ? 'feedback warn' : 'feedback ok';
+    feedback.replaceChildren(text('span', summarise(payload)));
+    // Show every rejected line so the owner can correct the file and retry.
+    if (payload.errors && payload.errors.length) {
+      const list = document.createElement('ul');
+      list.className = 'errors';
+      payload.errors.forEach(e => list.append(text('li', `Line ${e.line}: ${e.reason}`)));
+      feedback.append(list);
+    }
     await refresh();
   } catch (error) {
+    feedback.className = 'feedback bad';
     feedback.textContent = `Import failed: ${error.message}`;
   } finally {
     button.disabled = false;
