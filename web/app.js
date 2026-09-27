@@ -88,5 +88,30 @@ document.querySelectorAll('form[data-kind]').forEach(form => {
   form.addEventListener('submit', e => { e.preventDefault(); submitImport(form); });
   // Preview an import before committing it, so a retry cannot surprise the owner.
   form.querySelector('[data-check]').addEventListener('click', () => submitImport(form, true));
+
+  // Handle file input changes for dropzone
+  const fileInput = form.querySelector('input[type="file"]');
+  const dropzone = form.querySelector('.dropzone');
+  const fileNameDisplay = form.querySelector('.file-name');
+  const textDisplay = form.querySelector('.text');
+
+  if (fileInput) {
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length > 0) {
+        fileNameDisplay.textContent = `Selected: ${fileInput.files[0].name}`;
+        textDisplay.style.display = 'none';
+      } else {
+        fileNameDisplay.textContent = '';
+        textDisplay.style.display = 'block';
+      }
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      fileInput.addEventListener(eventName, () => dropzone.classList.add('dragover'));
+    });
+    ['dragleave', 'drop'].forEach(eventName => {
+      fileInput.addEventListener(eventName, () => dropzone.classList.remove('dragover'));
+    });
+  }
 });
 refresh().catch(e => { document.querySelector('#page-error').textContent = e.message; });

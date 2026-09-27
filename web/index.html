@@ -1,23 +1,137 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ClearLedger</title><link rel="stylesheet" href="/style.css"></head>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ClearLedger</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
 <body>
-<header><div class="brand">CL</div><div><h1>ClearLedger</h1><p>Invoices, payments and the balance between them.</p></div><span class="tag">Local demo · synthetic data</span></header>
-<main>
-<section class="metrics" aria-label="Overview">
-<article><span>Total invoices</span><strong id="invoice-count">—</strong></article>
-<article><span>Open invoices</span><strong id="open-count">—</strong></article>
-<article><span>Outstanding</span><strong id="outstanding">—</strong></article>
-</section>
-<section class="card">
-<div class="heading"><div><h2>Invoice register</h2><p>Review balances before sharing an export.</p></div><div class="actions"><label>Show <select id="status"><option value="all">All invoices</option><option value="open">Open invoices</option><option value="paid">Paid invoices</option></select></label><a class="button" href="/api/export" download="invoice-balances.csv">Export CSV</a></div></div>
-<div class="table-wrap"><table><thead><tr><th>Customer</th><th>Invoice</th><th>Due</th><th class="number">Amount</th><th class="number">Paid</th><th class="number">Balance</th><th>Status</th></tr></thead><tbody id="invoices"></tbody></table></div>
-</section>
-<section class="imports">
-<article class="card"><h2>Import invoices</h2><p>Choose an invoice CSV from the samples folder.</p><form data-kind="invoices"><label>Invoice CSV<input type="file" accept=".csv,text/csv" required></label><button type="button" class="secondary" data-check>Check without saving</button><button>Import invoices</button><p class="feedback" role="status" aria-live="polite"></p></form></article>
-<article class="card"><h2>Import payments</h2><p>Record payments against their invoice references.</p><form data-kind="payments"><label>Payment CSV<input type="file" accept=".csv,text/csv" required></label><button type="button" class="secondary" data-check>Check without saving</button><button>Import payments</button><p class="feedback" role="status" aria-live="polite"></p></form></article>
-</section>
-<section class="card"><h2>Unmatched payments</h2><p>Keep unresolved references visible for review.</p><ul id="unmatched"></ul></section>
-<p id="page-error" role="alert"></p>
-</main><footer>All amounts are INR. This is a fictional assessment application.</footer>
-<script src="/app.js"></script></body></html>
+    <header>
+        <div class="brand">CL</div>
+        <div class="header-text">
+            <h1>ClearLedger</h1>
+            <p>Invoices, payments and the balance between them.</p>
+        </div>
+        <span class="tag">Local demo · synthetic data</span>
+    </header>
+    
+    <main>
+        <section class="metrics" aria-label="Overview">
+            <article class="metric-card">
+                <div class="metric-icon"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg></div>
+                <div class="metric-content">
+                    <span>Total invoices</span>
+                    <strong id="invoice-count">—</strong>
+                </div>
+            </article>
+            <article class="metric-card">
+                <div class="metric-icon"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                <div class="metric-content">
+                    <span>Open invoices</span>
+                    <strong id="open-count">—</strong>
+                </div>
+            </article>
+            <article class="metric-card">
+                <div class="metric-icon"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                <div class="metric-content">
+                    <span>Outstanding</span>
+                    <strong id="outstanding">—</strong>
+                </div>
+            </article>
+        </section>
+
+        <section class="card table-section">
+            <div class="heading">
+                <div>
+                    <h2>Invoice register</h2>
+                    <p>Review balances before sharing an export.</p>
+                </div>
+                <div class="actions">
+                    <label>Show 
+                        <select id="status">
+                            <option value="all">All invoices</option>
+                            <option value="open">Open invoices</option>
+                            <option value="paid">Paid invoices</option>
+                        </select>
+                    </label>
+                    <a class="button primary-btn" href="/api/export" download="invoice-balances.csv">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right: 4px;"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> Export CSV
+                    </a>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Invoice</th>
+                            <th>Due</th>
+                            <th class="number">Amount</th>
+                            <th class="number">Paid</th>
+                            <th class="number">Balance</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoices"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="imports">
+            <article class="card">
+                <h2>Import invoices</h2>
+                <p>Choose an invoice CSV from the samples folder.</p>
+                <form data-kind="invoices">
+                    <div class="dropzone" id="dropzone-invoices">
+                        <input type="file" accept=".csv,text/csv" required id="file-invoices">
+                        <label for="file-invoices">
+                            <span class="icon"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg></span>
+                            <span class="text">Drag & drop CSV here or click to browse</span>
+                            <span class="file-name"></span>
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="secondary" data-check>Check without saving</button>
+                        <button class="primary">Import invoices</button>
+                    </div>
+                    <p class="feedback" role="status" aria-live="polite"></p>
+                </form>
+            </article>
+            <article class="card">
+                <h2>Import payments</h2>
+                <p>Record payments against their invoice references.</p>
+                <form data-kind="payments">
+                    <div class="dropzone" id="dropzone-payments">
+                        <input type="file" accept=".csv,text/csv" required id="file-payments">
+                        <label for="file-payments">
+                            <span class="icon"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg></span>
+                            <span class="text">Drag & drop CSV here or click to browse</span>
+                            <span class="file-name"></span>
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="secondary" data-check>Check without saving</button>
+                        <button class="primary">Import payments</button>
+                    </div>
+                    <p class="feedback" role="status" aria-live="polite"></p>
+                </form>
+            </article>
+        </section>
+
+        <section class="card">
+            <h2>Unmatched payments</h2>
+            <p>Keep unresolved references visible for review.</p>
+            <ul id="unmatched"></ul>
+        </section>
+        
+        <p id="page-error" role="alert"></p>
+    </main>
+    
+    <footer>All amounts are INR. This is a fictional assessment application.</footer>
+    <script src="/app.js"></script>
+</body>
+</html>

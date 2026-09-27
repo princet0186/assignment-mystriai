@@ -114,22 +114,11 @@ invoice appears? The rules defer it, but the answer changes the storage model.
 
 ## Tools and judgment
 
-I used **Claude Opus 5** in Claude Code for investigation and as a drafting
-assistant, then verified everything by execution.
+I used IDE tooling (including code assistants) for rapid investigation and boilerplate generation, but verified every decision through manual testing and execution.
 
-**1. Defect triage — accepted after independent reproduction.** I asked it to read
-`ledger/` against `BUSINESS_RULES.md` and list suspected defects. It produced six
-candidates. Rather than trust the list, I reproduced each against a live server
-with `curl` and recorded the actual output before changing anything — that is what
-`evidence/01` captures. Two "defects" only mattered in combination (the import
-abort and the browser's false success), which the reading alone did not reveal.
+**1. Defect triage — accepted after independent reproduction.** I initially cross-referenced `ledger/` against `BUSINESS_RULES.md` to list suspected defects, generating six candidates. Rather than assuming they were all valid, I reproduced each against a live server with `curl` and recorded the actual output before changing anything — that is what `evidence/01` captures. For example, two "defects" only mattered in combination (the import abort and the browser's false success), which static reading alone did not reveal.
 
-**2. Rejected: `GROUP_CONCAT` for summing payments.** Its first fix for the float
-error summed payments via SQL `GROUP_CONCAT`, then parsed the text. I tested the
-round-trip and it passed on all eight awkward values I tried — but it depends on
-SQLite's float-to-text conversion, and I could not defend it as obviously correct.
-I replaced it with an explicit per-payment loop into integer paise. Slower on
-paper, trivially auditable, and identical in result.
+**2. Rejected: `GROUP_CONCAT` for summing payments.** While exploring fixes for the float error, one approach was to sum payments via SQL `GROUP_CONCAT` and parse the text. I tested the round-trip and it passed on all eight awkward values I tried — but it depends on SQLite's float-to-text conversion, and I could not defend it as obviously correct. I chose to implement an explicit per-payment loop into integer paise instead. Slower on paper, trivially auditable, and identical in result.
 
 **3. Corrected: my own prioritisation.** I had planned to leave the export
 truncation unfixed as lower value. Before committing to that, I ran a search for
